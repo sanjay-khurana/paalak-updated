@@ -1,0 +1,264 @@
+@font-face {
+    font-family: opensans;
+    src: url(OpenSans-Regular.ttf);
+}
+* {
+	margin: 0;
+	padding: 0;
+	font-family: opensans;
+}
+.mt-10 {
+	margin-top: 10px;
+}
+.mt-50 {
+	margin-top: 50px;
+}
+.mb-50 {
+	margin-bottom: 50px;
+}
+.mt-20 {
+	margin-top: 20px;
+}
+.mb-20 {
+	margin-bottom: 20px;
+}
+.clear {
+	clear: both;
+}
+.fl {
+	float: left;
+}
+.fr {
+	float: right;
+}
+body {
+	background: #f2f2f2;
+}
+.main-wrapper {
+	width: 1000px;
+	margin: 0 auto;
+}
+.main-content {
+	background: #fff;	
+}
+header {
+	box-shadow: 0px 1px 5px #ccc;
+	background: #fff;
+	border-top: 5px solid #00871b;
+	padding: 5px 0;
+}
+header .logo {
+	width: 150px;
+}
+header .cart, .cart {
+	float: right;
+	margin: 20px 20px 0 10px;
+	background: url(../img/basket.png);
+	background-size: 25px 25px;
+    background-repeat: no-repeat;
+	width:100px;
+	height: 30px;
+	padding-left: 35px;
+	padding-top: 2px
+}
+.cart {
+	margin-top:10px;
+}
+header .user-icon {
+	float: right;
+	margin-top: 20px;
+	background: url(../img/usericon.png);
+	background-size: 25px 25px;
+    background-repeat: no-repeat;
+	height: 30px;
+	padding: 3px 15px 0 35px;
+}
+
+header .cart span.desk-count {
+	width: 25px;
+}
+
+.item-list {
+	border-bottom: 1px solid #eee;
+	padding: 5px 10px 0 10px;
+}
+.mob-only {
+	display: none
+}
+.item-list-group {
+	border:1px solid #eee;
+	border-top:0;
+	background: #fff;
+	width: 700px;
+
+}
+.item-thumbnail {
+	width: 100px;
+	float: left;
+	margin: 10px 30px 0 10px;
+}
+.item-weight {
+	min-width: 200px
+}
+.item-qty {
+	margin: 35px 20px 0 0;
+	float:left;
+}
+.item-qty input {
+	width: 40px !important; 
+	text-align: center;
+}
+.item-price {
+	float: right; 
+	margin: 35px 15px 0 0; 
+	font-size: 16px;
+}
+.right-section {
+	width: 250px; 
+}
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;  
+  border-top:8px solid #bbb;
+  display: inline-block;
+  margin: 0 0 0 2px;
+}
+.onpage-cart {
+	width: 290px; 
+	float: right; 
+	background: #fff; 
+	padding:10px; 
+	margin-left: 10px;
+	font-size: 13px;
+}
+.onpage-cart-item img {
+	float: left;
+	width: 50px;
+	margin-right: 10px
+}
+.onpage-cart-item {
+	margin-top: 15px
+}
+.onpage-cart-item .price {
+	margin-top: 17px;
+	float: right
+}
+.onpage-cart .price-summary {
+	border-top:1px solid #ccc; 
+	border-bottom:1px solid #ccc; 
+	padding:10px 0; 
+	margin-top: 10px;
+}
+.onpage-cart .price-summary .row {
+	margin-left:0px; 
+	margin-right:0px; 
+}
+.onpage-cart .price-summary .row > div {
+	padding: 5px 0;
+	text-align: right;
+}
+.white-bg {
+	background: #fff;
+}
+	
+
+/* media query for responsive design starts here */
+
+@media (min-width: 1024px) and (max-width: 1200px){
+
+}
+
+@media (min-width: 768px) and (max-width: 1023px){
+	.main-wrapper {
+		width: 750px;
+	}
+	.right-section {
+		width: 250px; 
+	}
+	.desk-only {
+		display: none
+	}
+	.item-list-group {
+		width: 100%
+	}
+}
+
+@media (min-width: 320px) and (max-width: 767px){
+	.main-wrapper {
+		width: 98%;
+	}
+	header .logo {
+		width: 100px;
+	}
+	header .cart {
+		margin-top: 10px;
+		width:40px;
+		padding-left: 20px;
+	}
+	.tab-desk-only {
+		display: none;
+	}
+	.mob-only {
+		display: inline-block;
+	}
+	.desk-only {
+		display: none
+	}
+	header .cart span.mob-count {
+		background: #00871b;
+		color: #fff;
+		width: 18px;
+		height: 18px;
+		border-radius:100%;
+		display: inline-block;
+		line-height: 18px;
+		padding-left: 6px;
+		font-size: 12px;
+		opacity: 0.8;
+		padding-top: 0px;
+	}
+	.item-thumbnail {
+		width: 70px;
+		margin: 10px 10px 0 0;
+	}
+	.right-section {
+		width: 100%; 
+		float: left;
+		max-width: 400px;
+		padding-left: 80px;		
+	}
+	.input-group-addon, .input-group-btn {
+		width: auto !important;
+	}
+	.item-qty {
+		margin: 20px 0 0;
+	}
+	header .user-icon {
+		margin-top: 10px
+	}
+	.item-list-group {
+		width: 100%
+	}
+	.item-price {
+		margin: 25px 10px 0 0;
+		font-size: 15px; 
+	}
+
+}
+
+@media (min-width: 580px) and (max-width: 767px){
+	.main-wrapper {
+		width: 98%;
+	}
+
+	.right-section {
+		float: right;
+		max-width: 220px;
+		margin: 15px 0 0 0;	
+	}
+}
+
+
+

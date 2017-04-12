@@ -1,0 +1,30 @@
+    <section class="mt-20 main-wrapper"><br>
+    	<div class="tab-wrapper">
+	    	<ul class="nav nav-tabs">
+	    	   <% for (var i in categories) { %>
+			  <li role="presentation"  data-category-id="<%= i %>" class="category_name category_id_<%= i %>"><a href="#"><%= categories[i] %></a></li>
+			   <% } %>
+			</ul>
+		</div>
+		<section class="item-list-group fl"><br>
+			<% for(var i=0; i<products.length; i++) { %>
+			<div class="item-list product_<%= products[i].idProduct	 %> category_<%= products[i].fkCategoryId %>">
+				<div class="left-section fl">
+					<img class="item-thumbnail" data-src-imageName="<%= products[i].imagePath %>" src="/images/<%= products[i].imagePath %>">
+					<div class="item-name fl" data-product-id="<%= products[i].idProduct %>" data-product-name="<%= products[i].name %>">
+						<h5> <%= products[i].name %></h5>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="right-section fr">
+					<div class="item-price"><a href="/updateProduct/<%= products[i].idProduct %>/">Update</a></span> </div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div><br>
+			</div>
+			<% } %>
+		</section>
+    </section>
+   
+
+

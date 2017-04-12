@@ -1,0 +1,143 @@
+ <section class="mt-20 main-wrapper" style="max-width:700px"><br>
+ 
+		<section class="item-list-group fl address-screen" style="padding: 20px"><br>
+
+			<form class="form-horizontal" id="place-order-form" method="POST" action="/placeOrder/">
+				<fieldset>
+
+				<!-- Form Name -->
+				<legend>Place Order</legend>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Pin Code<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <select id="pincode" name="pincode" class="delivery-time form-control">
+				  		<option value="">Select Pincode </option>
+				    	<% for (var i in sails.config.pincodeCityStateMapping) { %>
+				    	<option value="<%= i %>"  <% if (req.user.pincode == i) { %> selected <% } %>><%= i %></option>
+				    	<% } %>
+				    </select>
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="name">Full Name<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="name" name="name" type="text" value="<% if (req.user.name) { %><%= req.user.name %><% } %>" placeholder="" class="form-control input-md">
+				    <div class="fullname-error error hidden">This field is mandatory </div>  
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="address1">Address 1<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="address1" name="address1" value="<% if (req.user.address1) { %><%= req.user.address1 %><% } %>" type="text" placeholder="" class="form-control input-md">
+				  <div class="address1-error error hidden">This field is mandatory </div>   
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="address2">Address 2</label>  
+				  <div class="col-md-4">
+				  <input id="address2" name="address2" value="<% if (req.user.address2) { %><%= req.user.address2 %><% } %>" type="text" placeholder="" class="form-control input-md">
+				    
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="city">City<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="city" name="city" readonly="true"  type="text" value="<% if (req.user.city) { %><%= req.user.city %><% } %>" placeholder="" class="form-control input-md">
+				  <div class="city-error error hidden">This field is mandatory </div>   
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="contact">Contact<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="contact" name="contact" value="<% if (req.user.contact) { %><%= req.user.contact %><% } %>" maxlength="10" minlength="10" type="number" placeholder="" class="form-control input-md">
+				  <div class="contact-error error <% if (!data.errors.contact) { %>hidden<% } %>">Contact should be of atleast 10 digit </div>   
+				  </div>
+				</div>
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="email">Email<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="email" name="email" value="<% if (req.user.email) { %><%= req.user.email %><% } %>"  type="email" placeholder="Enter you mail id" class="form-control input-md">
+				  <div class="email-error error <% if (!data.errors.email) { %>hidden<% } %>">This field is mandatory</div>   
+				  </div>
+				</div>
+
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="state">State<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="state" name="state" readonly="true"  value="<% if (req.user.state) { %><%= req.user.state %><% } %>" type="text" placeholder="" class="form-control input-md">
+				   <div class="state-error error hidden">This field is mandatory </div> 
+				  </div>
+				</div>
+				
+				<div class="form-group payment-options" style="font-size: 13px">
+				  <label class="col-md-4 control-label" for="Payment Type">Payment Method<span class="red">*</span></label>  
+				  <div class="col-md-8">
+				  <input id="Mobikwik" name="paymentMethod" value="Mobikwik" type="radio" placeholder="" class="form-control input-md"><label for="Mobikwik">Mobikwik on Delivery</label>
+				  <input id="cashId" name="paymentMethod" value="Cash" type="radio" placeholder="" class="form-control input-md"><label for="cashId">Cash on Delivery</label><br>
+				  <input id="PaytmId" name="paymentMethod" value="PayTm" type="radio" placeholder="" class="form-control input-md"><label for="PaytmId">Paytm on Delivery</label>
+				  <input id="CardOnDelivery" name="paymentMethod" value="CardOnDelivery" type="radio" placeholder="" class="form-control input-md"><label for="CardOnDelivery">Card on Delivery</label>
+				   <div class="paymentmethod-error error hidden">This field is mandatory </div> 
+				  </div>
+				</div>
+
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="">Delivery Time<span class="red">*</span></label>
+				  <div class="col-md-6">
+				    <select id="delivery-time" name="deliveryTime" class="delivery-time form-control">
+				
+				    	<% for (var i in data.availableSlots) { %>
+				    	<option data-key="<%= data.slotKeys[i] %>" value="<%= data.availableSlots[i] %>"><%= data.availableSlots[i] %></option>
+				    	<% } %>
+				    </select>
+				  </div>
+				</div>
+
+				<!-- Button -->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for=""></label>
+				  <div class="col-md-8">
+				    <input type="checkbox" name="acceptance" id="acceptance" checked="checked" name="acceptance" class="btn btn-primary">
+				    <label style="font-size: 12px;" for="PaytmId">I agree to receive information about offers on SMS and email</label>
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for=""></label>
+				  <div class="col-md-4">
+				    <button id="placeorder" name="placeorder" class="btn btn-primary">Place Order</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+
+
+
+		</section>
+
+		<section class="item-list-group fl thankyou-screen hidden" style="padding: 20px; text-align: center; line-height: 180%"><br>
+
+			<span style="font-size:18px">Thanks for Placing Order</span><br><br>
+			Your Basket of Fresh Fruits/Vegetables will be delivered to you on <br> <span id="final-delivery-time"></span><br/> at your address <span id="user-address"></span><br><br>
+			<a href='/'>
+			<button id="placeorder" name="placeorder" class="btn btn-primary">Continue Shopping</button></a>&nbsp;&nbsp;<a href="/contact/">Need Help?</a><br><br>
+
+
+		</section>
+
+
+		<div class="clear"></div>
+    </section>

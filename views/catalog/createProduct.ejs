@@ -1,0 +1,81 @@
+<section class="mt-20 main-wrapper" style="max-width:700px"><br>
+ 
+		<section class="item-list-group fl address-screen" style="padding: 20px"><br>
+
+			<form class="form-horizontal" id="place-order-form" method="POST" enctype="multipart/form-data" action="/createProduct/">
+				<fieldset>
+
+				<!-- Form Name -->
+				<legend>Create Product</legend>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Product Name<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="prdoductname" name="prdoductname" type="text" placeholder="Enter Product Name" class="form-control input-md">
+				</div>
+				</div>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Product Price<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="prdoductprice" name="productprice" type="int" placeholder="Enter Product Price" class="form-control input-md">
+				</div>
+				</div>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Product Special Price<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				  <input id="productspprice" name="productspprice" type="int" placeholder="Enter Product Special Price" class="form-control input-md">
+				</div>
+				</div>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Variant<span class="red">*</span>
+				  </label>  
+				  <div class="col-md-4">
+				  <input id="productvariant" name="productvariant" type="text" placeholder="Enter Product Variant" class="form-control input-md">
+				  <input id="productvariantprice" name="productvariantprice" type="int" placeholder="Enter Product Variant Price" class="form-control input-md">
+				</div>
+				</div>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Image name<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				 
+				  <input id="productimage" name="productimage" type="text" placeholder="Enter Image Name" class="form-control input-md">
+				</div>
+				</div>
+				<!-- Text input-->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="pincode">Is Active<span class="red">*</span></label>  
+				  <div class="col-md-4">
+				 
+				  <input id="productimage" name="isActive" type="checkbox" checked="checked" class="form-control input-md">
+				</div>
+				</div>
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for="">Categories<span class="red">*</span></label>
+				  <div class="col-md-6">
+				    <select id="delivery-time" name="categoryId" class="delivery-time form-control">
+				    	<% for (var i in data.categories) { %>
+				    	<option value="<%= data.categories[i].idCategory %>"><%= data.categories[i].name %></option>
+				    	<% } %>
+				    </select>
+				  </div>
+				</div>
+				</div>
+				<!-- Button -->
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for=""></label>
+				  <div class="col-md-4">
+				    <button id="createProduct" name="createProduct" class="btn btn-primary">Create Product</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+
+
+
+		</section>

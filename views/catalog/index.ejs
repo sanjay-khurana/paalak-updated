@@ -1,0 +1,118 @@
+    <section class="mt-20 main-wrapper"><br>
+    	<div class="tab-wrapper">
+	    	<ul class="nav nav-tabs">
+	    	    <% for (var i in sails.config.tabOrders) { %>
+			  <li  data-category-name="<%= categories[sails.config.tabOrders[i]].dataName %>" data-category-id="<%= sails.config.tabOrders[i] %>" class="category_name category_id_<%= sails.config.tabOrders[i] %> <%= categories[sails.config.tabOrders[i]].dataName %>"><a href="javascript:void(0);"><%= categories[sails.config.tabOrders[i]].name %></a></li>
+			   <% } %>
+			</ul>
+		</div>
+		<section class="item-list-group fl"><br>
+			<% for(var i=0; i<products.length; i++) { %>
+			<div class="item-list product_<%= products[i].idProduct	 %> category_<%= products[i].fkCategoryId %>">
+				<div class="left-section fl">
+					<img class="item-thumbnail itemImage" data-src-imageName="<%= products[i].imagePath %>" src="/images/<%= products[i].imagePath %>">
+					<div class="item-name fl" data-product-id="<%= products[i].idProduct %>" data-product-name="<%= products[i].name %>">
+						<h5> <%= products[i].name %></h5>
+						<select class="form-control mt-10 item-weight" >
+						  <% for (var variant in products[i].unit) { %>
+						  <option value="<%= products[i].unit[variant].price %>"><%= variant %></option>
+						  <% } %>
+						</select>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="right-section fr">
+					<form class="form-inline item-qty">	   
+					    <div class="input-group">
+					      <span class="input-group-addon sub-qty">-</span>
+					      <input type="text" class="form-control product-cnt" placeholder="0">
+					      <span class="input-group-addon add-qty">+</span>
+					    </div>				    
+					</form>
+					<div class="item-price">Rs. <span class="actual-price"><%= products[i].price %></span> </div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div><br>
+			</div>
+			<% } %>
+		</section>
+
+		<section class="desk-only onpage-cart">
+			<h4 class="cart" style="float: none; width: 250px; margin-left:0"> My Basket</h4>
+			<div class="cart-items">
+				
+			</div>
+			<div class="price-summary">
+				<div class="row">
+					<div class="col-sm-8">Total</div>
+					<div class="col-sm-4">Rs.  <span class="actual-total"></span></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8">Shipping<br/><i>(if order < Rs. 200)</i></div>
+					<div class="col-sm-4">Rs. <span class="shipping-charges">0</span></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8"><b>Total Payable</b></div>
+					<div class="col-sm-4"><b>Rs.  <span class="actual-payable"></span></b></div>
+				</div>
+			</div>
+			<div class="text-align:centre">
+				<div class="btn btn-success btn-md order-now" <% if (!req.isLoggedIn) { %>data-toggle="modal" data-target="#otp" data-login-button="order" <% } %>  style="margin: 20px 0 20px 40px; width: 185px">ORDER NOW</div>
+			</div>
+
+		</section>
+		<div class="clear"></div>
+    </section>
+    <div class="cart-items-temp hidden">
+				<div class="onpage-cart-item hidden" data-prd-id="" data-prd-variant="">
+					<div class="fl">
+						<img class="prd-img" src="">
+						<div class="fl cart-prd-name "><span class="prd-name">Tomato</span><br><span class="prd-variant">500 gm</span> x <span class="prd-qty">2</span>&nbsp;<a href="javascript:void(0);" class="prd-rmv-cart"><span >Remove</span></a></div>
+					</div>
+					<div class="price">Rs. <span class="prd-price">120</span></div>
+				<div class="clear"></div>
+		</div>
+	</div>
+
+	<div class="cart-json hidden"><% if (req.isLoggedIn) { %><%= req.user.cart %><% } %></div>
+
+	<div id="modal-cart" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header" style="padding: 10px">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="caurt" style="float: none; width: 220px; margin:0"> My Basket</h4>
+	      </div>
+	      <div class="modal-body" style="padding: 0px 10px 10px">
+	      	<div class="cart-items">
+				
+			</div>
+			<div class="price-summary" style="border-bottom: 0">
+				<div class="row">
+					<div class="col-sm-8">Total</div>
+					<div class="col-sm-4">Rs. <span class="actual-total"></span></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8">Shipping <br/><i>(if order < Rs. 200)</i>i</div>
+					<div class="col-sm-4"><span class="shipping-charges">0</span></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-8"><b>Total Payable</b></div>
+					<div class="col-sm-4"><b>Rs. <span class="actual-payable"></span></b></div>
+				</div>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-success btn-md order-now" data-dismiss="modal" <% if (!req.isLoggedIn) { %>data-toggle="modal" data-target="#otp" data-login-button="order" <% } %>>ORDER NOW</button>
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+	<div class="mob-only sticky-buy-button">
+		<div class="fl mt-10">Total : Rs. <span class="actual-total"></span></div>
+		<button type="button" class="btn btn-success btn-md order-now fr" data-dismiss="modal"<% if (!req.isLoggedIn) { %>data-toggle="modal" data-target="#otp" data-login-button="order" <% } %>>ORDER NOW</button>
+	</div>
+

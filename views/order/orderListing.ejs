@@ -1,0 +1,98 @@
+<style type="text/css">
+table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+table caption {
+  font-size: 1.5em;
+  margin: .5em 0 .75em;
+}
+table tr {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: .35em;
+}
+table th,
+table td {
+  padding: .625em;
+  text-align: center;
+}
+table th {
+  font-size: .85em;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+@media screen and (max-width: 600px) {
+  table {
+    border: 0;
+  }
+  table caption {
+    font-size: 1.3em;
+  }
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: .8em;
+    text-align: right;
+  }
+  table td:before {
+    /*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  table td:last-child {
+    border-bottom: 0;
+  }
+}</style>
+<section class="mt-20 main-wrapper" style="max-width:1000px"><br>
+	<table>
+  <caption>Order Summary</caption>
+  <thead>
+    <tr>
+      <th class="col-md-1">#</th>
+      <th class="col-md-2">Order #</th>
+      <th class="col-md-2">Payment Method</th>
+      <th class="col-md-3">Contact</th>
+      <th class="col-md-2">Cart</th>
+      <th class="col-md-2">Delivery Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(var i=0; i<orderData.length; i++) { %>
+    <tr>
+      <td data-label="Sr no"><%= i + 1 %></td>
+      <td data-label="Order #"><%= orderData[i].orderId %></td>
+      <td data-label="PaymentMethod"><%= orderData[i].paymentMethod %></td>
+      <td data-label="Contact"><%= orderData[i].name %>,<%= orderData[i].contact %>, <%= orderData[i].email %>, &nbsp;<%= orderData[i].address %></td>
+      <td data-label="Cart"><%- orderData[i].cartString %></td>
+      <td data-label="Delivery"><%= orderData[i].deliveryTime %></td>
+    </tr>
+   <% } %>
+  </tbody>
+</table> 
+
+</section>		
