@@ -47,47 +47,47 @@ module.exports = {
       '201301' : {
          'city' : 'Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['9','11', '13','15','17', '19']
       },
       '201302' : {
          'city' : 'Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['9','11', '13','15','17', '19']
       },
       '201303' : {
          'city' : 'Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['9','11', '13','15','17', '19']
       },
       '201304' : {
          'city' : 'Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['9','11', '13','15','17', '19']
       },
      '201308' : {
          'city' : 'Greater Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['11', '13']
       },
       '201309' : {
          'city' : 'Greater Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['11', '13']
       },
      '201310' : {
          'city' : 'Greater Noida',
          'state' : 'Uttar Pradesh',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['11', '13']
       },			
       '110025' : {
          'city' : 'New Delhi',
          'state' : 'Delhi',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['11', '13','15']
       },
       '110076' : {
          'city' : 'New Delhi',
          'state' : 'Delhi',
-         'slots': ['9','11', '13','17', '19']
+         'slots': ['11', '13', '15']
       }
    },
     staticsRegex: /\.(eot|ttf|woff|gif|jpeg|jpg|png|woff2|woff|js|css|ico|mp4|webp)$/g,

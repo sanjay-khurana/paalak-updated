@@ -44,6 +44,10 @@ $(document).ready(function($){
 		}
 	});
 
+	if ($('#pincode').length && $('#pincode').val().length > 0) {
+		getPincodeDetails($('#pincode').val());
+	}
+
 	$('#placeorder').click(function(){
 		placeOrder();
 	});

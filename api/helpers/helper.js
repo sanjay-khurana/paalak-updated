@@ -7,7 +7,7 @@ var moment =require('moment');
 
 var HelperFunction =  {
 
-	getDeliveryTimeOptions : function() {
+	getDeliveryTimeOptions : function(pincode) {
 
 		var timeSlots = {9 : "09:00 AM - 10:00 AM", 10 : "10:00 AM - 11:00 AM", 11 : "11:00 AM - 12:00 PM", 
 							12 : "12:00 AM - 01:00 PM", 13: "01:00 PM - 02:00 PM", 
@@ -28,6 +28,10 @@ var HelperFunction =  {
 		var today = new Date();
 		var currHour = Math.floor(today.getUTCHours() + 5.5);
 		var dateString = moment(today).format('MMMM Do  YYYY');
+		var pincodeMapping = sails.config.pincodeCityStateMapping;
+		if (!pincode) {
+			pincode = '110025';
+		}
 		while (availableTimeSlots.length <= showTimeSlots) {
 			_.forEach(timeSlots, function(value, key){
 				if (availableTimeSlots.length <= showTimeSlots) {
@@ -41,7 +45,7 @@ var HelperFunction =  {
 			});
 			 i = i + 24;
 			 j = parseInt(i/24, 10);
-			 dateString = moment(today).add(1, 'days').format('MMMM Do  YYYY');
+			 dateString = moment(today).add(j, 'days').format('MMMM Do  YYYY');
 			 
 		}
 		//return availableTimeSlots;
