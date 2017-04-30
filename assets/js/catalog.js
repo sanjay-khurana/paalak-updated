@@ -49,8 +49,36 @@ $(document).ready(function($){
 	}
 
 	$('#placeorder').click(function(){
-		placeOrder();
+		if ($('#simpl-checkout-radio').is(':checked')) {
+			simplPlaceOrder();
+		} else {
+			placeOrder();	
+		}
 	});
+
+	function simplPlaceOrder() {
+		$.ajax({
+			'method': 'GET',
+			'url' : '/getCartValue/',
+			'success' : function(response) {
+				if (response.success) {
+					var cartValue = response.cartValue * 100;
+					window.Simpl && window.Simpl.setTransactionAmount(cartValue); 
+					window.Simpl && window.Simpl.authorizeTransaction();
+					window.Simpl && window.Simpl.on('success', function(response) {
+					  	if (response.status = 'success') {
+					  		placeOrder(response.transaction_token)
+					  	} else {
+					  		$('#generic-error').html("Something Went Wrong! Use some other payment method");
+					  		$('#generic-error').removeClass('hidden');
+					  		window.scrollTo(0, 0);
+					  	}
+					});
+				}
+			}
+		})
+			
+	}
 
 	$('#resend_otp').click(function(){
 		if (($('#contact-no').val().length > 10 || $('#contact-no').val().length < 10)) {
@@ -331,33 +359,36 @@ $(document).ready(function($){
 		return showAddress;
 	}
 
-	function placeOrder(){
+	function placeOrder(transaction_token){
 		$('.error').addClass('hidden');
 		var frm = $('#place-order-form');
 		$('#placeOrder').attr('disabled', 'disabled');
-	    frm.submit(function (ev) {
-	        $.ajax({
-	            type: frm.attr('method'),
-	            url: frm.attr('action'),
-	            data: frm.serialize(),
-	            success: function (response) {
-	                if (response.success == false) {
-	                	if (response.errors.length) {
-	                		for (var key in response.errors) {
-	                			$('.' + response.errors[key]).removeClass('hidden');
-	                		}
-	                	}
-	                	$('#placeOrder').attr('disabled', false);
-	                } else {
-	                	if (response.deliveryTime) {
-	                		showThankyouPage(response.deliveryTime, response.userAddress);	
-	                	}
-	                }
-	            }
-	        });
+		if (typeof transaction_token != "undefined") {
+			frm.append('<input type="text" class="hidden" name="transaction_token" value="'+transaction_token+'" />');	
+		}
+		
+	   
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (response) {
+                if (response.success == false) {
+                	if (response.errors.length) {
+                		for (var key in response.errors) {
+                			$('.' + response.errors[key]).removeClass('hidden');
+                		}
+                	}
+                	$('#placeOrder').attr('disabled', false);
+                } else {
+                	if (response.deliveryTime) {
+                		showThankyouPage(response.deliveryTime, response.userAddress);	
+                	}
+                }
+            }
+        });
 
-	        ev.preventDefault();
-	    });
+	      
 		
 	}
 
@@ -382,9 +413,35 @@ $(document).ready(function($){
 		
 	}
 
+	function simplIntegrate() {
+		if ($('#address-page').length > 0 && window.Simpl && $('#simpl-checkout').length > 0) {
+			$('#simpl-checkout').hide();
+			var contactNo = $('#contact').val();
+			var email = $('#email').val();
+			if (contactNo && email) {
+				window.Simpl && window.Simpl.setApprovalConfig({
+				  email: email,
+				  phone_number: contactNo
+				});
+				window.simpl && window.setCustomization({
+					"text" : "Pay later"
+				})
+				window.Simpl && window.Simpl.on('approval', function yep() {
+				  $('#simpl-checkout').show();	
+				 // window.Simpl &&$('#simpl-checkout').html(window.Simpl && window.Simpl.getDisplayText()).show();
+				}, function nope() {
+				  	$('#simpl-checkout').hide();
+				});
+		
+			}
+			
+		}
+	}
+
 	function init() {
 		showActiveCategory(5);
 		userState();
+		simplIntegrate();
 	}
 
 	init();

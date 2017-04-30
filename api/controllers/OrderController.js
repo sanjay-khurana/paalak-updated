@@ -111,6 +111,7 @@ var OrderController = BaseController.extend({
 			var addressData = req.body;
 			var orderData = {};
 			var shippingCharges = 0;
+
 			orderData.orderId = 'PAALAK' + HelperFunction.getOrderNumber();
 			orderData.idSession = req.userCookie;
 			orderData.contact = addressData.contact;
@@ -125,6 +126,9 @@ var OrderController = BaseController.extend({
 			orderData.paymentMethod = addressData.paymentMethod;
 			orderData.status = "placed";
 			orderData.orderValue = 0;
+			if (addressData.transaction_token != "undefined") {
+				orderData.transaction_token = addressData.transaction_token;
+			}
 
 
 			//Creating data for User Update
@@ -227,6 +231,7 @@ var OrderController = BaseController.extend({
 
 			var data = {};
 			data.deliveryTime = orderData.deliveryTime;
+
 			UserCollection.find({'idSession' : orderData.idSession}).exec(function(err, response){
 				if (err) {
 					BaseController.logInfo("paalak.log", {"Error Log" : "Session Id Not found in order"});
@@ -240,6 +245,7 @@ var OrderController = BaseController.extend({
 						orderData.orderValue = response[0].cartValue;
 						if (orderData.orderValue <= 199) {
 							shippingCharges = 20;
+							orderData.shippingCharges = 20;
 							orderData.orderValue = parseInt(orderData.orderValue, 10) + parseInt(shippingCharges, 10);
 						}
 						
@@ -248,67 +254,77 @@ var OrderController = BaseController.extend({
 						emailApiRequestData.subscribers.data.sequence["1"].Shippingchrage = shippingCharges;
 						apiRequestData.subscribers.data.sequence["1"].OrderValue = orderData.orderValue;
 						
-						OrderCollection.create(orderData).exec(function(err, resp){
-								if (err) {
-									
-									BaseController.logInfo("paalak.log", {"Error Log" : "Order Creating Issue"});
-									return res.json({
-										'success' : false
-									});
-								} else {
-									if (!_.isEmpty(res)) {
-										UserCollection.update({'idSession' : orderData.idSession}, {'name' : userData.name, 'contact': userData.contact, 'pincode' : userData.pincode, 'address' : userData.address, 'cart' : "", "email" : userData.email, "isMarketing" : userData.isMarketing}).exec(function(err, updateRes){
-											if (err) {
-												BaseController.logInfo("paalak.log", {"Error Log" : "User Update failed while placing order"});
-											}
-											var apiRequest = {
-												url : apiRequestUrl,
-												body : JSON.stringify(apiRequestData),
-												method : 'POST',
-												headers: {
-								                    'Content-Type': 'application/json'
-								                 }
-											}
-											ExternalApi.request(apiRequest).then(function(response){
-												return res.json({
-														'success' : true,
-														'deliveryTime' : data.deliveryTime,
-														'userAddress' : userData.address
-												});
-											});
-											var emailApiRequest = {
-												url : emailRequestUrl,
-												body : JSON.stringify(emailApiRequestData),
-												method : 'POST',
-												headers: {
-								                    'Content-Type': 'application/json'
-								                 }
-											}
-											ExternalApi.request(emailApiRequest).then(function(response){
-												
-											});
-											emailApiRequestData.subscribers.data.sequence["1"].email = sails.config.paalakEmail
-											var emailCareApiRequest = {
-												url : emailRequestUrl,
-												body : JSON.stringify(emailApiRequestData),
-												method : 'POST',
-												headers: {
-								                    'Content-Type': 'application/json'
-								                 }
-											}
-											ExternalApi.request(emailCareApiRequest).then(function(response){
-													
-											});
-
-										});
+					HelperFunction.placeSimplOrder(orderData, userData, function(simpResponse){
+						if (simpResponse.success == true) {
+							OrderCollection.create(orderData).exec(function(err, resp){
+									if (err) {
 										
+										BaseController.logInfo("paalak.log", {"Error Log" : "Order Creating Issue"});
+										return res.json({
+											'success' : false
+										});
+									} else {
+										if (!_.isEmpty(resp)) {
+											UserCollection.update({'idSession' : orderData.idSession}, {'name' : userData.name, 'contact': userData.contact, 'pincode' : userData.pincode, 'address' : userData.address, 'cart' : "", "email" : userData.email, "isMarketing" : userData.isMarketing}).exec(function(err, updateRes){
+												if (err) {
+													BaseController.logInfo("paalak.log", {"Error Log" : "User Update failed while placing order"});
+												}
+												var apiRequest = {
+													url : apiRequestUrl,
+													body : JSON.stringify(apiRequestData),
+													method : 'POST',
+													headers: {
+									                    'Content-Type': 'application/json'
+									                 }
+												}
+												ExternalApi.request(apiRequest).then(function(response){
+													return res.json({
+															'success' : true,
+															'deliveryTime' : data.deliveryTime,
+															'userAddress' : userData.address
+													});
+												});
+												var emailApiRequest = {
+													url : emailRequestUrl,
+													body : JSON.stringify(emailApiRequestData),
+													method : 'POST',
+													headers: {
+									                    'Content-Type': 'application/json'
+									                 }
+												}
+												ExternalApi.request(emailApiRequest).then(function(response){
+													
+												});
+												emailApiRequestData.subscribers.data.sequence["1"].email = sails.config.paalakEmail
+												var emailCareApiRequest = {
+													url : emailRequestUrl,
+													body : JSON.stringify(emailApiRequestData),
+													method : 'POST',
+													headers: {
+									                    'Content-Type': 'application/json'
+									                 }
+												}
+												ExternalApi.request(emailCareApiRequest).then(function(response){
+														
+												});
+
+											});
+											
+										}
 									}
-								}
-							})
+								})
+							} else {
+								BaseController.logInfo("paalak.log", {"Error Log" : "Simpl Checkout Error"});
+								return res.json({
+									'success' : false
+								});
+							}
+						});
 					}
 				}
 
-			});
+				});
+			
 		}
 		
 	},
@@ -463,7 +479,33 @@ var OrderController = BaseController.extend({
 				}
 			});
 		});
-} 
+	},
+
+	getCartValue: function(req, res) {
+		var userSessionId = req.userCookie;
+		UserCollection.find({'idSession' : userSessionId}).exec(function(err, response){
+			if (err) {
+				BaseController.logInfo("paalak.log", {"Error Log" : "Session Id Not found in order"});
+				return res.json({
+					'success' : false
+				});
+			} else {
+				if (!_.isEmpty(response) && !_.isEmpty(response[0].cart)) {
+					var orderData = {};
+					orderData.cart = response[0].cart;
+					orderData.orderValue = response[0].cartValue;
+					if (orderData.orderValue <= 199) {
+						shippingCharges = 20;
+						orderData.orderValue = parseInt(orderData.orderValue, 10) + parseInt(shippingCharges, 10);
+					}
+					return res.json({
+						'success' : true,
+						'cartValue' : orderData.orderValue
+					});
+				}
+			}
+		});			
+	}  
 
 });
 

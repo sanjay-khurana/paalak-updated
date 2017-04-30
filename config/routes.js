@@ -92,6 +92,9 @@ module.exports.routes = {
   },
   '/orderListing/' : {
     target : 'OrderController.orderListing'
+  },
+  '/getCartValue/' : {
+    target : 'OrderController.getCartValue'
   }
 
   /***************************************************************************
