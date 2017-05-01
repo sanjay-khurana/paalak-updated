@@ -236,7 +236,8 @@ var OrderController = BaseController.extend({
 				if (err) {
 					BaseController.logInfo("paalak.log", {"Error Log" : "Session Id Not found in order"});
 					return res.json({
-						'success' : false
+						'success' : false,
+						'errors' : err
 					});
 				} else {
 					
@@ -316,7 +317,8 @@ var OrderController = BaseController.extend({
 							} else {
 								BaseController.logInfo("paalak.log", {"Error Log" : "Simpl Checkout Error"});
 								return res.json({
-									'success' : false
+									'success' : false,
+									'errors': {}
 								});
 							}
 						});

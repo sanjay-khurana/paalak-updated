@@ -139,7 +139,8 @@ var HelperFunction =  {
 			}
 			
 			ExternalApi.request(simplApiRequest).then(function(response, err){
-				if (!_.isEmpty(response) && !_.isEmpty(response[0].body) && !_.isEmpty(response[0].body.success == true)) {
+				var responseBody = JSON.parse(response[0].body);
+				if (!_.isEmpty(responseBody) && responseBody.success == true) {
 					cb (orderResponse);
 				} else {
 					orderResponse.success = false;
