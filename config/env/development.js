@@ -94,6 +94,7 @@ module.exports = {
     paalakEmail : "care@paalak.in",
     adminContact1 : 9910798481,
     adminContact2 : 9810023434,
-    tabOrders: [5, 1 ,4, 3, 2]
+    tabOrders: [5, 1 ,4, 3, 2],
+    simplTransUrl: "https://sandbox-api.getsimpl.com"
 
 };

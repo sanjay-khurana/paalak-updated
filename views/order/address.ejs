@@ -1,6 +1,6 @@
  <section class="mt-20 main-wrapper" style="max-width:700px"><br>
  
-		<section class="item-list-group fl address-screen" style="padding: 20px"><br>
+		<section id="address-page" class="item-list-group fl address-screen" style="padding: 20px"><br>
 
 			<form class="form-horizontal" id="place-order-form" method="POST" action="/placeOrder/">
 				<fieldset>
@@ -8,6 +8,8 @@
 				<!-- Form Name -->
 				<legend>Place Order</legend>
 				<!-- Text input-->
+				<div id="generic-error" class="error hidden">Something Went Wrong! Use some other payment method
+				</div>
 				<div class="form-group">
 				  <label class="col-md-4 control-label" for="pincode">Pin Code<span class="red">*</span></label>  
 				  <div class="col-md-4">
@@ -88,8 +90,11 @@
 				  <input id="Mobikwik" name="paymentMethod" value="Mobikwik" type="radio" placeholder="" class="form-control input-md"><label for="Mobikwik">Mobikwik on Delivery</label>
 				  <input id="cashId" name="paymentMethod" value="Cash" type="radio" placeholder="" class="form-control input-md"><label for="cashId">Cash on Delivery</label><br>
 				  <input id="PaytmId" name="paymentMethod" value="PayTm" type="radio" placeholder="" class="form-control input-md"><label for="PaytmId">Paytm on Delivery</label>
-				  <input id="CardOnDelivery" name="paymentMethod" value="CardOnDelivery" type="radio" placeholder="" class="form-control input-md"><label for="CardOnDelivery">Card on Delivery</label>
-				   <div class="paymentmethod-error error hidden">This field is mandatory </div> 
+				  <input id="CardOnDelivery" name="paymentMethod" value="CardOnDelivery" type="radio" placeholder="" class="form-control input-md"><label for="CardOnDelivery">Card on Delivery</label><br/>
+				   <% if (req.user.contact == sails.config.adminContact1 || req.user.contact == sails.config.adminContact1) { %>
+				   <span id="simpl-checkout"><input id="simpl-checkout-radio" name="paymentMethod" value="SimplCheckout" type="radio" placeholder="" class="form-control input-md"><label for="simpl-checkout-radio">SIMPL - Buy Now, Pay Later</label></span>
+				  <% } %>
+				  <div class="paymentmethod-error error hidden">This field is mandatory </div> 
 				  </div>
 				</div>
 
@@ -117,12 +122,18 @@
 				<div class="form-group">
 				  <label class="col-md-4 control-label" for=""></label>
 				  <div class="col-md-4">
-				    <button id="placeorder" name="placeorder" class="btn btn-primary">Place Order</button>
+				    <button class="hidden btn btn-primary">Place Order</button>
 				  </div>
 				</div>
 				
 				</fieldset>
 				</form>
+				<div class="form-group">
+				  <label class="col-md-4 control-label" for=""></label>
+				  <div class="col-md-4">
+				    <button id="placeorder" name="placeorder" class="btn btn-primary">Place Order</button>
+				  </div>
+				</div>
 
 
 

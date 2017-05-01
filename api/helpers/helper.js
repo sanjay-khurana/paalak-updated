@@ -97,7 +97,60 @@ var HelperFunction =  {
 			cartString += "</>";
 		});
 		return cartString;
-	}
+	},
+	placeSimplOrder : function(orderData, userData, cb) {
+		var orderResponse = {
+			'success' : true
+		}
+		var items = [];
+		var productObj = {
+			    "sku": "",
+			    "quantity": 0,
+			    "unit_price_in_paise": 0,
+			    "display_name": ""
+		 }
+		_.forEach(orderData.cart ,function(value){
+			productObj["sku"] = 'PAALAK' + value.productId;
+			productObj["quantity"] = value.qty;
+			productObj["unit_price_in_paise"] = value.price;
+			productObj["display_name"] = value.name;
+			items.push(productObj);
+		});
+		
+		if (orderData.paymentMethod == 'SimplCheckout') {
+			var simplApiRequestData = {
+				  "transaction_token": orderData.transaction_token,
+				  "amount_in_paise": orderData.orderValue * 100,
+				  "order_id": orderData.orderId,
+				  "items": items,
+				  "shipping_address": userData.address,
+				  "billing_address": userData.address,
+				  "shipping_amount_in_paise": orderData.shippingCharges,
+				  "discount_in_paise": 0,
+			}
+			var simplApiRequest = {
+				url : sails.config.simplTransUrl + '/api/v1.1/transactions',
+				body : JSON.stringify(simplApiRequestData),
+				method : 'POST',
+				headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'a77bafdc05a5fc2236c10b89c7b513e4'
+                 }
+			}
+			
+			ExternalApi.request(simplApiRequest).then(function(response, err){
+				var responseBody = JSON.parse(response[0].body);
+				if (!_.isEmpty(responseBody) && responseBody.success == true) {
+					cb (orderResponse);
+				} else {
+					orderResponse.success = false;
+					cb (orderResponse);
+				}
+			});
+		} else {
+				cb (orderResponse);
+			}
+		}
 }
 
 module.exports = HelperFunction;
