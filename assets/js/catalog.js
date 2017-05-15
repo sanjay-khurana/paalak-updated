@@ -299,6 +299,12 @@ $(document).ready(function($){
 					if (response.success == true) {
 						if (orderNow) {
 							window.location.href = "/orderAddress/";	
+						} else {
+							if (response.discount && response.discount > 0) {
+								$('.discount-charges').html(response.discount);
+								var actualPayable = parseInt($('.actual-payable').html(), 10);
+								$('.actual-payable').html(actualPayable - response.discount);
+							}
 						}
 					}
 				}
@@ -418,17 +424,16 @@ $(document).ready(function($){
 			$('#simpl-checkout').hide();
 			var contactNo = $('#contact').val();
 			var email = $('#email').val();
-			if (contactNo && email) {
+			if (contactNo) {
 				window.Simpl && window.Simpl.setApprovalConfig({
-				  email: email,
-				  phone_number: contactNo
+				  phone_number: contactNo,
+				  email : email
 				});
-				window.simpl && window.setCustomization({
-					"text" : "Pay later"
-				})
+				
 				window.Simpl && window.Simpl.on('approval', function yep() {
-				  $('#simpl-checkout').show();	
-				 // window.Simpl &&$('#simpl-checkout').html(window.Simpl && window.Simpl.getDisplayText()).show();
+				  $('#simpl-checkout').show();
+				  $('#simpl-checkout-radio').attr('checked', 'checked');
+				  window.Simpl &&$('#simpl-checkout-text').html(window.Simpl && window.Simpl.getDisplayText()).show();
 				}, function nope() {
 				  	$('#simpl-checkout').hide();
 				});

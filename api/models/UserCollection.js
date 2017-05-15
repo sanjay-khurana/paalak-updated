@@ -16,6 +16,7 @@ module.exports = {
 	    "cart": {'type':'json'},
 	    "address" : {'type' : 'string'},
 	    "cartValue" : {'type' : 'int'},
+	    "cartDiscount" : {'type' : 'int'},
 	    "isMarketing" : {'type' : 'int'}
 	}
 };

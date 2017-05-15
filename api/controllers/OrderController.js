@@ -22,7 +22,8 @@ var OrderController = BaseController.extend({
 				'email' : "",
 				'cart' : cartData,
 				'address' : JSON.stringify({}),
-				'cartValue' : HelperFunction.getCartValue(cartData)
+				'cartValue' : HelperFunction.getCartValue(cartData),
+				'cartDiscount' : 0
 			}
 			
 			if (!_.isEmpty(req.user)) {
@@ -33,6 +34,13 @@ var OrderController = BaseController.extend({
 					userData.address = JSON.stringify(req.user.address);	
 				}
 			}
+			
+			// 10% off for existing user
+			userData.cartDiscount = 0;
+			if (!_.isEmpty(userData.email)) {
+				userData.cartDiscount = parseInt(userData.cartValue * (10/100), 10);
+			}
+
 			
 			
 			UserCollection.find({'idSession' : userData.idSession}).exec(function(err, response){
@@ -53,7 +61,7 @@ var OrderController = BaseController.extend({
 									'error':"Update failed"
 								});
 							}
-							return res.json({'success' : true});
+							return res.json({'success' : true, 'discount' : userData.cartDiscount});
 						});
 					} else {
 						UserCollection.create(userData).exec(function(err, createRes){
@@ -64,7 +72,7 @@ var OrderController = BaseController.extend({
 									"error": 'New use create failed'
 								});
 							}
-							return res.json({'success' : true});
+							return res.json({'success' : true, 'discount' : userData.cartDiscount});
 						});
 					}
 				}
@@ -91,20 +99,41 @@ var OrderController = BaseController.extend({
 		});
 
 		var deliveryInformation = HelperFunction.getDeliveryTimeOptions(pincode);
-		if (!_.isEmpty(pincode)) {
-			if (!_.isEmpty(pincodeAvailaility)) {
-				return res.json({
-					'success': true,
-					'city': sails.config.pincodeCityStateMapping[pincode].city,
-					'state': sails.config.pincodeCityStateMapping[pincode].state,
-					'deliveryInfo' : deliveryInformation
+		OrderCollection.find().where({"deliveryTime" : deliveryInformation.availableTimeSlots}).exec(function(err, orders){
+			if (!_.isEmpty(orders)) {
+				var orderByDeliveryTime = {};
+				_.forEach(orders, function(value, key){
+					if (typeof orderByDeliveryTime[value.deliveryTime] === "undefined") {
+						orderByDeliveryTime[value.deliveryTime] = 1;	
+					} else {
+						orderByDeliveryTime[value.deliveryTime] += 1;
+					}
 				});
 			}
-		}
-		BaseController.logInfo("paalak.log", {"InfoLog" : pincode + " Check for availabilty"});
-		return res.json({
-			'success' : false,
+			var removeDeliverySlot = [];	
+			_.forEach(deliveryInformation.availableTimeSlots, function(value){
+				if (!_.isEmpty(orderByDeliveryTime) &&  orderByDeliveryTime[value] >= sails.config.maxOrderPerPincode) {
+					removeDeliverySlot.push(value);
+				}
+			});
+			deliveryInformation.availableTimeSlots = _.difference(deliveryInformation.availableTimeSlots, removeDeliverySlot);
+			if (!_.isEmpty(pincode)) {
+				if (!_.isEmpty(pincodeAvailaility)) {
+					return res.json({
+						'success': true,
+						'city': sails.config.pincodeCityStateMapping[pincode].city,
+						'state': sails.config.pincodeCityStateMapping[pincode].state,
+						'deliveryInfo' : deliveryInformation
+					});
+				}
+			} else {
+				BaseController.logInfo("paalak.log", {"InfoLog" : pincode + " Check for availabilty"});
+				return res.json({
+					'success' : false,
+				});
+			}
 		});
+		
 	},
 	'placeOrder' : function(req, res) {
 		if (!_.isEmpty(req.body)) {
@@ -244,11 +273,13 @@ var OrderController = BaseController.extend({
 					if (!_.isEmpty(response) && !_.isEmpty(response[0].cart)) {
 						orderData.cart = response[0].cart;
 						orderData.orderValue = response[0].cartValue;
+						orderData.cartDiscount = response[0].cartDiscount;
 						if (orderData.orderValue <= 199) {
 							shippingCharges = 20;
 							orderData.shippingCharges = 20;
 							orderData.orderValue = parseInt(orderData.orderValue, 10) + parseInt(shippingCharges, 10);
 						}
+						orderData.orderValue = orderData.orderValue - parseInt(orderData.cartDiscount, 10);
 						
 						emailApiRequestData.subscribers.data.sequence["1"].order_detail = HelperFunction.getOrderDetailHtml(orderData.cart);
 						emailApiRequestData.subscribers.data.sequence["1"].OrderValue = orderData.orderValue;
@@ -495,11 +526,14 @@ var OrderController = BaseController.extend({
 				if (!_.isEmpty(response) && !_.isEmpty(response[0].cart)) {
 					var orderData = {};
 					orderData.cart = response[0].cart;
+					orderData.cartDiscount = response[0].cartDiscount;
 					orderData.orderValue = response[0].cartValue;
+
 					if (orderData.orderValue <= 199) {
 						shippingCharges = 20;
 						orderData.orderValue = parseInt(orderData.orderValue, 10) + parseInt(shippingCharges, 10);
 					}
+					orderData.orderValue = orderData.orderValue - parseInt(orderData.cartDiscount, 10);
 					return res.json({
 						'success' : true,
 						'cartValue' : orderData.orderValue

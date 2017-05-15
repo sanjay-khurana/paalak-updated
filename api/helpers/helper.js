@@ -82,7 +82,8 @@ var HelperFunction =  {
 			cartString += "Rs. " + value.price + ' each';
 			cartString += "</>";
 		});
-		return String(cartString).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+		return cartString;
+		//return String(cartString).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 		//return ;
 	},
 	
@@ -126,7 +127,7 @@ var HelperFunction =  {
 				  "shipping_address": userData.address,
 				  "billing_address": userData.address,
 				  "shipping_amount_in_paise": orderData.shippingCharges,
-				  "discount_in_paise": 0,
+				  "discount_in_paise": orderData.cartDiscount,
 			}
 			var simplApiRequest = {
 				url : sails.config.simplTransUrl + '/api/v1.1/transactions',
